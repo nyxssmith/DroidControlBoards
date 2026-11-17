@@ -1,17 +1,17 @@
-print("Hello, World!")
-from machine import Pin
+from machine import UART
 import time
 
-# Onboard User LED is connected to GPIO 21 (active-low)
-led = Pin(21, Pin.OUT)
+# Initialize UART(1) on XIAO ESP32S3
+# D6 corresponds to GPIO 43 (TX) and D7 corresponds to GPIO 44 (RX)
+uart = UART(1, baudrate=9600, tx=43, rx=44, bits=8, parity=None, stop=1)
+
+print("UART initialized. Sending periodic messages...")
 
 while True:
-    led.value(0)  # Turn LED ON
-    time.sleep(0.5)
-    led.value(1)  # Turn LED OFF
-    time.sleep(0.5)
-
-# the end goal of this is to talk over TBD (CAN likely) with central control to implement the following calls:
-# - set_speed(left_speed, right_speed)
-# - get_speed() -> (left_speed, right_speed)
-# - stop()
+    message = b"Hello from XIAO ESP32S3 RS485!\r\n"
+    message = b"TEST\r\n"
+    uart.write(message)
+    print("Sent:", message)
+    
+    # Wait 2 seconds before sending the next packet
+    time.sleep(2)
