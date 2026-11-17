@@ -8,14 +8,20 @@ if ! command -v mpremote &>/dev/null; then
     exit 1
 fi
 
-if [[ $# -ne 2 ]]; then
-    echo "Usage: $(basename "$0") <source-file> <destination-on-device>" >&2
+if [[ $# -lt 2 || $# -gt 3 ]]; then
+    echo "Usage: $(basename "$0") <source-file> <destination-on-device> [device]" >&2
     echo "  e.g.: $(basename "$0") main.py :main.py" >&2
+    echo "  e.g.: $(basename "$0") main.py :main.py /dev/ttyACM2" >&2
     exit 1
 fi
 
 set -ex
 src="$1"
 dst="$2"
+device="${3:-a1}"
 
-mpremote cp "$src" :"$dst"
+if [[ "$device" == "a"* ]]; then
+    mpremote "$device" cp "$src" :"$dst"
+else
+    mpremote connect "$device" -- cp "$src" :"$dst"
+fi
