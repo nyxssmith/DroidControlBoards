@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+# TO Nyx sudo modprobe cdc_acm if it doesnt work
+
 get_devices() {
     local devs=()
     for d in /dev/ttyACM* /dev/ttyS*; do
